@@ -1,0 +1,1608 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <link href="/css/all.css" media="all" rel="stylesheet" type="text/css">
+  <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+  <title>Pathfinder Character Sheet | Beyond Tabletop</title>
+  <meta property="og:title" content="Pathfinder Character Sheet | Beyond Tabletop">
+  <meta name="description" property="og:description" content="Pathfinder character are sheets designed to remove the tedium of making and leveling a character. With integrated classes (core, base, alternative, NPC, and CRB prestige), feats, spells, conditions, customizable fields and more, Beyond Tabletop’s character sheets let you stop looking stuff up and start playing instead.">
+  <meta property="og:image" content="http://www.beyondtabletop.com/ico/favicon-310.png">
+  <meta property="og:site_name" content="Beyond Tabletop">
+
+  <link rel="shortcut icon" href="/ico/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/ico/favicon-57.png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="/ico/favicon-114.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="/ico/favicon-72.png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="/ico/favicon-144.png" />
+  <link rel="apple-touch-icon" sizes="60x60" href="/ico/favicon-60.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/ico/favicon-120.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="/ico/favicon-76.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/ico/favicon-152.png" />
+  <link rel="icon" type="image/png" href="/ico/favicon-196.png" sizes="196x196" />
+  <link rel="icon" type="image/png" href="/ico/favicon-96.png" sizes="96x96" />
+  <link rel="icon" type="image/png" href="/ico/favicon-32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/ico/favicon-16.png" sizes="16x16" />
+  <link rel="icon" type="image/png" href="/ico/favicon-128.png" sizes="128x128" />
+  <meta name="application-name" content="Beyond Tabletop"/>
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="/ico/favicon-144.png" />
+  <meta name="msapplication-square70x70logo" content="/ico/favicon-70.png" />
+  <meta name="msapplication-square150x150logo" content="/ico/favicon-150.png" />
+  <meta name="msapplication-wide310x150logo" content="/ico/favicon-310x150.png" />
+  <meta name="msapplication-square310x310logo" content="/ico/favicon-310.png" />
+
+  <meta name="apple-mobile-web-app-title" content="BTT">
+
+  <!-- iOS 6 & 7 iPad (retina, portrait) -->
+  <link href="/ico/apple-startup-1536x2008.png"
+    media="(device-width: 768px) and (device-height: 1024px)
+       and (orientation: portrait)
+       and (-webkit-device-pixel-ratio: 2)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 & 7 iPad (retina, landscape) -->
+  <link href="/ico/apple-startup-1496x2048.png"
+    media="(device-width: 768px) and (device-height: 1024px)
+       and (orientation: landscape)
+       and (-webkit-device-pixel-ratio: 2)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 iPad (portrait) -->
+  <link href="/ico/apple-startup-768x1004.png"
+    media="(device-width: 768px) and (device-height: 1024px)
+       and (orientation: portrait)
+       and (-webkit-device-pixel-ratio: 1)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 iPad (landscape) -->
+  <link href="/ico/apple-startup-748x1024.png"
+    media="(device-width: 768px) and (device-height: 1024px)
+       and (orientation: landscape)
+       and (-webkit-device-pixel-ratio: 1)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 & 7 iPhone 5 -->
+  <link href="/ico/apple-startup-640x1096.png"
+    media="(device-width: 320px) and (device-height: 568px)
+       and (-webkit-device-pixel-ratio: 2)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 & 7 iPhone (retina) -->
+  <link href="/ico/apple-startup-640x920.png"
+    media="(device-width: 320px) and (device-height: 480px)
+       and (-webkit-device-pixel-ratio: 2)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 iPhone -->
+  <link href="/ico/apple-startup-320x460.png"
+    media="(device-width: 320px) and (device-height: 480px)
+       and (-webkit-device-pixel-ratio: 1)"
+    rel="apple-touch-startup-image">
+  
+  <script src="/js/lib.js"></script>
+  <script src="/js/all.js"></script>
+</head>
+<body id="app" class="display-sheet" ng-controller="characterController" ng-class="help ? 'help-on' : 'help-off'">
+  <div id="container">
+    <header ng-class="tabs.showing_nav ? 'showing-nav' : ''">
+      <div class="toggle-nav" ng-click="toggleNav()">
+        <i class="fa fa-bars"></i>
+      </div>
+      <div class="active-nav-item" ng-bind="getActiveNavItem()"></div>
+      <div class="logo-wrap">
+        <div class="logo nav-clickable" ng-click="switchTab(0)"></div>
+      </div>
+      <div class="tabs-nav">
+        <a href="#" class="tab-nav-item" ng-click="switchTab($index)" ng-class="$index === character.prefs.tab ? 'active' : ''" ng-repeat="tab in tabs.list" ng-bind="tab"></a>
+        <a href="#" class="tab-nav-item toggle-help" ng-click="toggleHelp()">Turn <span ng-bind="character.prefs.help ? 'off' : 'on'"></span> Help</a>
+      </div>
+    </header>
+    <div id="content">
+      <div class="forbidden-screen" ng-show="$root.forbidden">
+        <div class="inner">
+          <h2>Oops, it looks like you don't have access to this sheet.</h2> 
+          <a href="/dashboard" class="button-orange button-large"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+      </div>
+      <div class="error-screen" ng-show="$root.error">
+        <div class="inner">
+          <h2>There's been an error, <br>please refresh.</h2> 
+          <a href="javascript:window.location.href=window.location.href" class="button-orange button-large"><i class="fa fa-refresh fa-spin"></i> Refresh</a>
+        </div>
+      </div>
+      <div class="loading" ng-hide="ready || $root.forbidden">
+        <div class="inner">
+          <h2>Loading character, <br>please wait...</h2> 
+          <div><i class="fa fa-spinner fa-spin"></i></div>
+        </div>
+      </div>
+      <div class="tabs-wrapper">
+        <div class="tab" ng-class="character.prefs.tab === 0 ? 'active' : ''" data-index="0">
+          <div class="overview">
+            <h2 class="group-header nav-clickable" ng-click="switchTab(1)"><span ng-bind="character.name"></span>: Level <span ng-bind="getTotalLevel()"></span> <span ng-bind="getAllKlasses()"></span></h2>
+            <p class="help-text" ng-show="character.prefs.help">This is your overview page. As you fill out details on the other tabs, the most relevant information will show up in a compact and easy-to-understand format here. You can also click on some of the text here to jump to the corresponding tab to edit its data.</p>
+            <p class="help-text" ng-show="character.prefs.help">Clicking on a feat or a spell will expand it to show more information.</p>
+            <div class="flex-row gutters-10">
+              <div class="flex-col-6">
+                <div class="overview-block nav-clickable" ng-hide="character.combat.style === 'Two-Weapon Fighting' && $index > 0" ng-repeat="weapon in character.getWeapons()" ng-click="switchTab(5)">
+                  <h3 ng-bind="weapon.name" ng-hide="character.combat.style === 'Two-Weapon Fighting'"></h3>
+                  <h3 ng-show="character.combat.style === 'Two-Weapon Fighting'">Attack</h3>
+                  <h4>Full Attack:</h4>
+                  <div class="overview-block">
+                    <div class="flex-mobile-row gutters-5 row-space attack-row" ng-show="shouldShowAttackForWeapon(attack, weapon)" ng-repeat="attack in character.all_attacks">
+                      <div class="flex-col-6 attack-col">
+                        <div ng-bind="getAttackRoll(attack, weapon)"></div>
+                        <div class="calculated-notice" ng-bind="getCalculatedNotice(getNoticeTypeForWeapon(attack, weapon, 'attack'))"></div>
+                      </div>
+                      <div class="flex-col-6 damage-col">
+                        <div ng-bind="getDamageRoll(attack, weapon)"></div>
+                        <div class="calculated-notice" ng-bind="getCalculatedNotice(getNoticeTypeForWeapon(attack, weapon, 'damage'))"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <h4>Single Attack:</h4>
+                  <div class="flex-mobile-row gutters-5 row-space attack-row">
+                    <div class="flex-col-6 attack-col">
+                      <div ng-bind="getSingleAttackRoll(weapon)"></div>
+                      <div class="calculated-notice" ng-bind="getCalculatedNotice(getNoticeTypeForStandard(weapon, 'attack'))"></div>
+                    </div>
+                    <div class="flex-col-6 damage-col">
+                      <div ng-bind="getSingleDamageRoll(weapon)"></div>
+                      <div class="calculated-notice" ng-bind="getCalculatedNotice(getNoticeTypeForStandard(weapon, 'damage'))"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-mobile-row gutters-5 nav-clickable" ng-click="switchTab(3)">
+                  <div class="flex-col-3">HP:</div>
+                  <div class="flex-col-9">
+                    <strong ng-bind="getHPRemaining(character.combat.hp)"></strong>/<strong ng-bind="getHPTotal(character.combat.hp)"></strong>
+                  </div>
+                </div>
+                <div class="flex-mobile-row gutters-5 overview-block nav-clickable" ng-click="switchTab(3)">
+                  <div class="flex-col-3">AC:</div>
+                  <div class="flex-col-9">
+                    <strong ng-bind="getTotalAC(character.combat.ac)"></strong> (Touch: <strong ng-bind="getTouchAC(character.combat.ac)"></strong>, Flat: <strong ng-bind="getFlatAC(character.combat.ac)"></strong>)
+                  </div>
+                </div>
+                <div class="overview-conditions cap-conditions overview-block nav-clickable" ng-show="anyActiveConditions()" ng-click="switchTab(8)">
+                  <h3>Conditions</h3>
+                  <div ng-bind="getActiveConditions()"></div>
+                </div>
+                <div class="flex-mobile-row gutters-10 overview-block">
+                  <div class="flex-col-6 nav-clickable" ng-click="switchTab(2)">
+                    <div class="flex-mobile-row gutters-5">
+                      <div class="flex-col-6">STR:</div>
+                      <div class="flex-col-6"> 
+                        <strong ng-bind="getAbilityTotal(character.abilities.STR, 'STR')"></strong>
+                        /
+                        <strong ng-bind="getAbilityMod('STR')"></strong>
+                      </div>
+                    </div>
+                    <div class="flex-mobile-row gutters-5">
+                      <div class="flex-col-6">DEX:</div>
+                      <div class="flex-col-6"> 
+                        <strong ng-bind="getAbilityTotal(character.abilities.DEX, 'DEX')"></strong>
+                        /
+                        <strong ng-bind="getAbilityMod('DEX')"></strong>
+                      </div>
+                    </div>
+                    <div class="flex-mobile-row gutters-5">
+                      <div class="flex-col-6">CON:</div>
+                      <div class="flex-col-6"> 
+                        <strong ng-bind="getAbilityTotal(character.abilities.CON, 'CON')"></strong>
+                        /
+                        <strong ng-bind="getAbilityMod('CON')"></strong>
+                      </div>
+                    </div>
+                    <div class="flex-mobile-row gutters-5">
+                      <div class="flex-col-6">INT:</div>
+                      <div class="flex-col-6"> 
+                        <strong ng-bind="getAbilityTotal(character.abilities.INT, 'INT')"></strong>
+                        /
+                        <strong ng-bind="getAbilityMod('INT')"></strong>
+                      </div>
+                    </div>
+                    <div class="flex-mobile-row gutters-5">
+                      <div class="flex-col-6">WIS:</div>
+                      <div class="flex-col-6"> 
+                        <strong ng-bind="getAbilityTotal(character.abilities.WIS, 'WIS')"></strong>
+                        /
+                        <strong ng-bind="getAbilityMod('WIS')"></strong>
+                      </div>
+                    </div>
+                    <div class="flex-mobile-row gutters-5">
+                      <div class="flex-col-6">CHA:</div>
+                      <div class="flex-col-6"> 
+                        <strong ng-bind="getAbilityTotal(character.abilities.CHA, 'CHA')"></strong>
+                        /
+                        <strong ng-bind="getAbilityMod('CHA')"></strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col-6 nav-clickable" ng-click="switchTab(2)">
+                    <div class="flex-mobile-row gutters-5" ng-repeat="stat in character.getSaves()">
+                      <div class="flex-col-6">
+                        <span ng-bind="stat.name"></span>:
+                      </div>
+                      <div class="flex-col-6">
+                        <strong ng-bind="getSaveTotal(stat)"></strong>
+                      </div>
+                    </div>
+                    <div class="flex-mobile-row gutters-5 nav-clickable" ng-click="switchTab(3)">
+                      <div class="flex-col-6">CMB / CMD:</div>
+                      <div class="flex-col-6">
+                        <strong ng-bind="getBothCombatScores(character.combat.cmb, character.combat.cmd)"></strong>
+                      </div>
+                    </div>
+                    <div class="flex-mobile-row gutters-5 nav-clickable" ng-click="switchTab(3)">
+                      <div class="flex-col-6">Initiative:</div>
+                      <div class="flex-col-6">
+                        <strong ng-bind="getTotalInit(character.combat.init)"></strong>
+                      </div>
+                    </div>
+                    <div class="flex-mobile-row gutters-5 nav-clickable" ng-click="switchTab(3)">
+                      <div class="flex-col-6">Speed:</div>
+                      <div class="flex-col-6">
+                        <strong ng-bind="getCurrentSpeed()"></strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="nav-clickable overview-block" ng-click="switchTab(4)">
+                  <h3>Skills</h3>
+                  <div class="flex-mobile-row gutters-10" ng-repeat="stat in character.getSkills()" ng-show="stat.class_skill" ng-hide="stat.ranks === 0">
+                    <div class="flex-col-7"><span ng-bind="stat.name"></span>:</div>
+                    <div class="flex-col-5">
+                      <strong ng-bind="getSkillTotal(stat)"></strong>
+                    </div>
+                  </div>
+                </div>
+                <div class="nav-clickable overview-block" ng-click="switchTab(6)" ng-repeat="list in character.getLists()" ng-show="list.overview">
+                  <h3 ng-bind="list.name"></h3>
+                  <div class="flex-row gutters-5 row-space" ng-repeat="item in character.getListItems($index)">
+                    <div class="flex-col-4">
+                      <strong ng-bind="item.name"></strong>:
+                    </div>
+                    <div class="item-info flex-col-8">
+                      <span ng-bind="item.text"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex-col-6">
+                <div class="overview-feats expandable-items">
+                  <h3 class="nav-clickable" ng-click="switchTab(7)">Feats</h3>
+                  <div class="overview-block">
+                    <div class="flex-row gutters-5 row-space" ng-repeat="feat in character.getFeats() track by $index" bt-toggle-active>
+                      <div class="flex-col-4 hide-on-active">
+                        <strong ng-bind="feat.name"></strong>:
+                      </div>
+                      <div class="item-info flex-col-8">
+                        <span ng-bind="feat.summary" class="hide-on-active"></span>
+                        <div class="details">
+                          <div class="flex-row gutters-5 row-space">
+                            <div class="flex-col-4"><strong ng-bind="feat.name"></strong></div>
+                            <div class="flex-col-8"><span ng-bind="feat.summary"></span></div>
+                          </div>
+                          <div class="flex-row gutters-5 row-space">
+                            <div class="flex-col-4"><strong>Prerequisites: </strong></div>
+                            <div class="flex-col-8"><span ng-bind="feat.prereq"></span></div>
+                          </div>
+                          <div class="flex-row gutters-5 row-space" ng-repeat="info in character.getFeatTexts($index)" ng-hide="info.text === ''">
+                            <div class="flex-col-4"><strong><span ng-bind="info.name"></span>: </strong></div>
+                            <div class="flex-col-8"><span ng-bind="info.text"></span></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="overview-spells expandable-items">
+                  <h3 class="nav-clickable" ng-click="switchTab(8)">Spells</h3>
+                  <div class="spells-showing" ng-repeat="level in character.getSpellLevels()">
+                    <div ng-hide="level.length === 0">
+                      <span class="spell-level-toggle" bt-toggle-spell-level>
+                        <i class="fa fa-caret-right show-spell-level"></i>
+                        <i class="fa fa-caret-down hide-spell-level"></i>
+                      </span>
+                      Level <span ng-bind="$index"></span>
+                    </div>
+                    <div class="spells">
+                      <div class="flex-row gutters-5 row-space" ng-repeat="spell in character.getSpells($index)" bt-toggle-active>
+                        <div class="flex-col-4 hide-on-active">
+                          <strong ng-bind="spell.name"></strong>:
+                        </div>
+                        <div class="item-info flex-col-8">
+                          <div ng-bind="spell.short_description" class="hide-on-active"></div>
+                          <div class="hide-on-active"><strong ng-bind="spell.remaining"></strong> / <strong ng-bind="spell.prepared"></strong></div>
+                          <div class="details">
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong ng-bind="spell.name"></strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.short_description"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Remain/Prep: </strong></div>
+                              <div class="flex-col-8">
+                                <div class="flex-mobile-row gutters-5">
+                                  <div class="flex-col-6">
+                                    <input type="number" class="form-control click-to-edit" placeholder="Remaining" ng-model="spell.remaining" ng-click="$event.stopPropagation();">
+                                  </div>
+                                  <div class="flex-col-6">
+                                    <input type="number" class="form-control click-to-edit" placeholder="Prepared" ng-model="spell.prepared" ng-click="$event.stopPropagation();">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Level: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.level"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Description: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.description"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>School: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.restrictions.school"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space" ng-hide="spell.restrictions.subschool === ''">
+                              <div class="flex-col-4"><strong>School: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.restrictions.subschool"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Casting Time: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.casting.casting_time"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Components: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.casting.components"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Duration: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.casting.duration"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space" ng-hide="spell.casting.effect === ''">
+                              <div class="flex-col-4"><strong>Effect: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.casting.effect"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Range: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.casting.range"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Saving Throw: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.casting.saving_throw"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space">
+                              <div class="flex-col-4"><strong>Spell Resistance: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.casting.spell_resistance"></span></div>
+                            </div>
+                            <div class="flex-row gutters-5 row-space" ng-hide="spell.casting.targets === ''">
+                              <div class="flex-col-4"><strong>Targets: </strong></div>
+                              <div class="flex-col-8"><span ng-bind="spell.casting.targets"></span></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab" ng-class="character.prefs.tab === 1 ? 'active' : ''" data-index="1">
+          <div class="flex-row gutters-10">
+            <div class="flex-col-6">
+              <h2 class="group-header">Basic</h2>
+              <p class="help-text" ng-show="character.prefs.help">Changing your class or level will automatically fill in details for your character from the CRB. Racial bonuses and modifers are NOT calculatead or automatically included.</p>
+              <p class="help-text" ng-show="character.prefs.help"><strong>BETA USERS</strong>: No class-specific bonuses and powers are currently automatically calculated. We are in the process of cataloguing and testing all of these but we need your help! Let us know which class special abilities and upgrades would be most useful. No archtypes (yet)!</p>
+              <div class="group group-basic">
+                <div class="flex-wrap-mobile-row gutters-5">
+                  <div class="flex-col-6 stat-row stat-row-race">
+                    <div class="name-col">
+                      <div class="form-group">
+                        <label class="control-label">Race</label>
+                      </div>
+                    </div>
+                    <div class="value-col">
+                      <div class="form-group">
+                        <div class="select-wrap">
+                          <i class="fa fa-sort"></i>
+                          <label ng-bind="character.basic.race"></label>
+                          <select class="form-control" ng-model="character.basic.race" ng-options="option for option in selection.race">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col-6 stat-row stat-row-size">
+                    <div class="name-col">
+                      <div class="form-group">
+                        <label class="control-label">Size</label>
+                      </div>
+                    </div>
+                    <div class="value-col">
+                      <div class="form-group">
+                        <div class="select-wrap">
+                          <i class="fa fa-sort"></i>
+                          <label ng-bind="character.basic.size"></label>
+                          <select class="form-control" ng-model="character.basic.size" ng-options="option for option in selection.size">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-mobile-row gutters-5 row-space">
+                  <div class="flex-col-6">
+                    <div class="form-group"><label class="control-label">Class</label></div>
+                  </div>
+                  <div class="flex-col-6">
+                    <div class="form-group"><label class="control-label">Level</label></div>
+                  </div>
+                </div>
+                <div class="klass-row row-space" ng-class="$index > 0 ? 'removable-klass': 'permanent-klass'" ng-repeat="klass in character.getKlasses()">
+                  <div class="flex-mobile-row gutters-5">
+                    <div class="flex-col-6 stat-row stat-row-klass">
+                      <div class="klass-col">
+                        <div class="form-group">
+                          <div class="select-wrap">
+                            <i class="fa fa-sort"></i>
+                            <label ng-bind="klass.klass"></label>
+                            <select class="form-control" ng-change="onClassChange(klass)" ng-model="klass.klass" ng-options="option for option in selection.klass">
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex-col-6">
+                      <div class="level-col">
+                        <div class="form-group">
+                          <div class="select-wrap">
+                            <i class="fa fa-sort"></i>
+                            <label ng-bind="klass.level"></label>
+                            <select class="form-control" ng-change="onLevelChange()" ng-model="klass.level" ng-options="option for option in getLevelsForKlass(klass.klass)">
+                            </select>
+                          </div>
+                        </div>
+                        <button type="button" ng-show="$index > 0" ng-disable="$index < 1" class="remove-item" ng-click="remove(character.klasses, $index)"><i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="button-wrap">
+                  <button type="button" class="add-item" ng-click="addKlass()"><i class="fa fa-plus"></i></button>
+                </div>
+                <div class="flex-wrap-mobile-row gutters-5">
+                  <div class="flex-col-6">
+                    <div class="xp-col">
+                      <div class="form-group">
+                        <label class="block-label">XP</label>
+                        <input type="text" class="form-control click-to-edit" ng-model="character.basic.xp">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col-6">
+                    <div class="xp-next-col">
+                      <div class="form-group">
+                        <label class="block-label">Next Level</label>
+                        <label class="control-label" ng-bind="getNextXPByLevel()"></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col-6">
+                    <div class="progression-col">
+                      <div class="form-group">
+                        <label class="block-label">Progression Speed</label>
+                        <div class="select-wrap">
+                          <i class="fa fa-sort"></i>
+                          <label ng-bind="character.basic.progression"></label>
+                          <select class="form-control" ng-model="character.basic.progression" ng-options="option for option in selection.progression">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><!--/group-->
+            </div>
+            <div class="flex-col-6">
+              <h2 class="group-header">Profile</h2>
+              <p class="help-text" ng-show="character.prefs.help">These fields help round out your character's personality and background.</p>
+              <div class="group group-profile">
+                <div class="flex-wrap-mobile-row gutters-5">
+                  <div class="flex-col-6 stat-row row-space">
+                    <div class="value-col">
+                      <div class="form-group">
+                        <input type="text" class="form-control click-to-edit" placeholder="Character Name" ng-model="character.name">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col-6 stat-row row-space" ng-repeat="stat in character.getProfiles()">
+                    <div class="value-col">
+                      <div class="form-group">
+                        <input type="text" class="form-control click-to-edit" placeholder="[[stat.name]]" ng-model="stat.value">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><!--/group-->
+            </div>
+          </div>
+        </div><!--/tab-->
+        <div class="tab" ng-class="character.prefs.tab === 2 ? 'active' : ''" data-index="2">
+          <div class="flex-row gutters-10">
+            <div class="flex-col-6">
+              <h2 class="group-header">Abilities</h2>
+              <p class="help-text" ng-show="character.prefs.help">These are your basic abilities. You can edit the main value or add a misc value for temporary modifiers.</p>
+              <div class="group group-abilities">
+                <div class="flex-mobile-row gutters-5 row-space label-row">
+                  <div class="flex-col-2 name-col">
+                    <div class="form-group">
+                      <label class="control-label">Name</label>
+                    </div>
+                  </div>
+                  <div class="flex-col-3 value-col">
+                    <div class="form-group">
+                      <label class="control-label">Value</label>
+                    </div>
+                  </div>
+                  <div class="flex-col-3 misc-col">
+                    <div class="form-group">
+                      <label class="control-label">Misc</label>
+                    </div>
+                  </div>
+                  <div class="flex-col-2 total-col">
+                    <div class="form-group">
+                      <label class="control-label">Total</label>
+                    </div>
+                  </div>
+                  <div class="flex-col-2 mod-col">
+                    <div class="form-group">
+                      <label class="control-label">Mod</label>
+                    </div>
+                  </div>
+                </div><!--/label row-->
+                <div class="stat-row" ng-repeat="stat in selection.abilities">
+                  <div class="flex-mobile-row gutters-5 row-space">
+                    <div class="flex-col-2 name-col">
+                      <div class="form-group">
+                        <label class="control-label" ng-bind="stat"></label>
+                      </div>
+                    </div>
+                    <div class="flex-col-3 value-col">
+                      <div class="form-group">
+                        <input type="number" class="form-control click-to-edit" ng-model="character.abilities[stat].value">
+                      </div>
+                    </div>
+                    <div class="flex-col-3 misc-col">
+                      <div class="form-group">
+                        <input type="number" class="form-control click-to-edit" ng-model="character.abilities[stat].misc">
+                      </div>
+                    </div>
+                    <div class="flex-col-2 total-col">
+                      <div class="form-group">
+                        <label class="control-label" ng-bind="getAbilityTotal(character.abilities[stat], stat)"></label>
+                      </div>
+                    </div>
+                    <div class="flex-col-2 mod-col">
+                      <div class="form-group">
+                        <label class="control-label" ng-bind="getAbilityMod(stat)"></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="calculated-notice" ng-bind="getCalculatedNotice(stat, 'ability')"></div>
+                </div>
+              </div><!--/group-->
+            </div>
+            <div class="flex-col-6">
+              <h2 class="group-header">Saves</h2>
+              <p class="help-text" ng-show="character.prefs.help">Base saves are pulled from your class and level selection. If you have any miscellaneous modifiers, enter them here.</p>
+              <div class="group group-saves">
+                <div class="flex-mobile-row gutters-5 row-space label-row">
+                  <div class="name-col flex-col-3">
+                    <div class="form-group">
+                      <label class="control-label">Name</label>
+                    </div>
+                  </div>
+                  <div class="base-col flex-col-2">
+                    <div class="form-group">
+                      <label class="control-label">Base</label>
+                    </div>
+                  </div>
+                  <div class="mod-col flex-col-2">
+                    <div class="form-group">
+                      <label class="control-label">Mod</label>
+                    </div>
+                  </div>
+                  <div class="misc-col flex-col-3">
+                    <div class="form-group">
+                      <label class="control-label">Misc</label>
+                    </div>
+                  </div>
+                  <div class="total-col flex-col-2">
+                    <div class="form-group">
+                      <label class="control-label">Total</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="stat-row" ng-repeat="stat in character.getSaves()">
+                  <div class="flex-mobile-row gutters-5 row-space">
+                    <div class="name-col flex-col-3">
+                      <div class="form-group">
+                        <label class="control-label" ng-bind="stat.name"></label>
+                      </div>
+                    </div>
+                    <div class="base-col flex-col-2">
+                      <div class="form-group">
+                        <label class="control-label" ng-bind="stat.base"></label>
+                      </div>
+                    </div>
+                    <div class="base-col flex-col-2">
+                      <div class="form-group">
+                        <label class="control-label" ng-bind="getAbilityMod(stat.ability)"></label>
+                      </div>
+                    </div>
+                    <div class="misc-col flex-col-3">
+                      <div class="form-group">
+                        <input type="number" class="form-control click-to-edit" ng-model="stat.misc">
+                      </div>
+                    </div>
+                    <div class="total-col flex-col-2">
+                      <div class="form-group">
+                        <label class="control-label" ng-bind="getSaveTotal(stat)"></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="calculated-notice" ng-bind="getCalculatedNotice(stat.name, 'save')"></div>
+                </div>
+              </div><!--/group-->
+            </div>
+          </div>
+        </div><!--/tab-->
+        <div class="tab" ng-class="character.prefs.tab === 3 ? 'active' : ''" data-index="3">
+          <h2 class="group-header">Combat</h2>
+          <div class="group group-combat">
+            <div class="flex-row gutters-10">
+              <div class="flex-col-6">
+                <div class="stat-row stat-row-hp">
+                  <h3 class="h4">HP</h3>
+                  <p class="help-text" ng-show="character.prefs.help">Total HP is made up of all four of the following pieces. Your HP from CON is automatically calculated and added to your total.</p>
+                  <div class="flex-wrap-mobile-row gutters-5 inner-row inner-row-hp">
+                    <div class="flex-col-6 row-space value-col">
+                      <div class="form-group">
+                        <label class="block-label">Rolled HP</label>
+                        <input type="number" class="form-control click-to-edit" ng-model="character.combat.hp.value">
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space temporary-col">
+                      <div class="form-group">
+                        <label class="block-label">Temporary HP</label>
+                        <input type="number" class="form-control click-to-edit" ng-model="character.combat.hp.temporary">
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space misc-col">
+                      <div class="form-group">
+                        <label class="block-label">Misc HP</label>
+                        <input type="number" class="form-control click-to-edit" ng-model="character.combat.hp.misc">
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space damage-col">
+                      <div class="form-group">
+                        <label class="block-label">Wounds</label>
+                        <input type="number" class="form-control click-to-edit" ng-model="character.combat.hp.damage">
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space value-col">
+                      <div class="form-group">
+                        <label class="block-label">HP from CON</label>
+                        <label class="control-label" ng-bind="getHPFromCON()"></label>
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space remaining-col">
+                      <div class="form-group">
+                        <label class="block-label">Current HP</label>
+                        <label class="control-label" ng-bind="getHPRemaining(character.combat.hp)"></label>
+                      </div>
+                      <div class="calculated-notice" ng-bind="getCalculatedNotice('hp')"></div>
+                    </div>
+                  </div>
+                  <h3 class="h4">Maneuvers</h3>
+                  <p class="help-text" ng-show="character.prefs.help">Base Attack Bonus is pulled from your selected Class and Level.</p>
+                  <div class="flex-wrap-mobile-row gutters-5 inner-row inner-row-misc-attack">
+                    <div class="flex-col-12 value-col">
+                      <div class="form-group">
+                        <label class="block-label">BAB: <span ng-bind="character.combat.bab.value"></span></label>
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space misc-col">
+                      <div class="form-group">
+                        <label class="block-label">Misc CMB</label>
+                        <input type="number" class="form-control click-to-edit" ng-model="character.combat.cmb.misc">
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space total-col">
+                      <div class="form-group">
+                        <label class="block-label">CMB Total: <span ng-bind="getTotalCMB(character.combat.cmb)"></span></label>
+                      </div>
+                      <div class="calculated-notice" ng-bind="getCalculatedNotice('cmb')"></div>
+                    </div>
+                    <div class="flex-col-6 row-space misc-col">
+                      <div class="form-group">
+                        <label class="block-label">Misc CMD</label>
+                        <input type="number" class="form-control click-to-edit" ng-model="character.combat.cmd.misc">
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space total-col">
+                      <div class="form-group">
+                        <label class="block-label">CMD Total: <span ng-bind="getTotalCMD(character.combat.cmd)"></span></label>
+                      </div>
+                      <div class="calculated-notice" ng-bind="getCalculatedNotice('cmd')"></div>
+                    </div>
+                  </div>
+                  <h3 class="h4">Misc.</h3>
+                  <p class="help-text" ng-show="character.prefs.help">Various resistance values and other combat variables. Style refers to your combat style. Selecting Two-Weapon Fighting assumes your offhand weapon is light and that you have the Two-Weapon Fighting feat and will change the way your attacks are calculated. Selecting Weilding Two-Handed will multiply your attack damage by 1.5.</p>
+                  <div class="flex-wrap-mobile-row gutters-5 inner-row inner-row-style">
+                    <div class="flex-col-6 dr-col">
+                      <div class="form-group row-space">
+                        <label class="block-label">DR</label>
+                        <input type="text" class="form-control click-to-edit" ng-model="character.combat.dr.value">
+                      </div>
+                    </div>
+                    <div class="flex-col-6 sr-col">
+                      <div class="form-group row-space">
+                        <label class="block-label">SR</label>
+                        <input type="number" class="form-control click-to-edit" ng-model="character.combat.sr.value">
+                      </div>
+                      <div class="calculated-notice" ng-bind="getCalculatedNotice('sr')"></div>
+                    </div>
+                    <div class="flex-col-6 row-space misc-col">
+                      <div class="form-group">
+                        <label class="block-label">Misc Initiative</label>
+                        <input type="number" class="form-control click-to-edit" ng-model="character.combat.init.misc">
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space total-col">
+                      <div class="form-group">
+                        <label class="block-label">Total Initiative</label>
+                        <label class="control-label" ng-bind="getTotalInit(character.combat.init)"></label>
+                      </div>
+                      <div class="calculated-notice" ng-bind="getCalculatedNotice('init')"></div>
+                    </div>
+                    <div class="flex-col-6 row-space style-col">
+                      <div class="form-group">
+                        <label class="block-label">Style</label>
+                        <div class="select-wrap">
+                          <i class="fa fa-sort"></i>
+                          <label ng-bind="character.combat.style"></label>
+                          <select class="form-control" ng-model="character.combat.style" ng-options="option for option in selection.styles">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space"></div>
+                    <div class="flex-col-6 row-space mainhand-col" ng-show="shouldShowTwoWeaponFighting()">
+                      <div class="form-group">
+                        <label class="block-label">Main Hand Weapon</label>
+                        <div class="select-wrap">
+                          <i class="fa fa-sort"></i>
+                          <label ng-bind="getWeaponNameAtIndex(character.combat.mainhand)"></label>
+                          <select class="form-control" ng-model="character.combat.mainhand" ng-options="character.weapons.indexOf(weapon) as weapon.name for weapon in character.getWeapons()">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex-col-6 row-space offhand-col" ng-show="shouldShowTwoWeaponFighting()">
+                      <div class="form-group">
+                        <label class="block-label">Offhand Weapon</label>
+                        <div class="select-wrap">
+                          <i class="fa fa-sort"></i>
+                          <label ng-bind="getWeaponNameAtIndex(character.combat.offhand)"></label>
+                          <select class="form-control" ng-model="character.combat.offhand" ng-options="character.weapons.indexOf(weapon) as weapon.name for weapon in character.getWeapons()">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex-col-6">
+                <h3 class="h4">AC</h3>
+                <p class="help-text" ng-show="character.prefs.help">You can find your Flat Footed and Touch ACs on the Overview tab.</p>
+                <div class="flex-wrap-mobile-row gutters-5 stat-row stat-row-ac">
+                  <div class="flex-col-6 row-space armor-col">
+                    <div class="form-group">
+                      <label class="block-label">Armor Bonus: <span ng-bind="getArmorBonus('Armor')"></span></label>
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space shield-col">
+                    <div class="form-group">
+                      <label class="block-label">Shield Bonus: <span ng-bind="getArmorBonus('Shield')"></span></label>
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space natural-col">
+                    <div class="form-group">
+                      <label class="block-label">Natural AC</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.ac.natural">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space deflection-col">
+                    <div class="form-group">
+                      <label class="block-label">Deflection AC</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.ac.deflection">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space dodge-col">
+                    <div class="form-group">
+                      <label class="block-label">Dodge AC</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.ac.dodge">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space misc-col">
+                    <div class="form-group">
+                      <label class="block-label">Misc AC</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.ac.misc">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space dex-col">
+                    <div class="form-group">
+                      <label class="block-label">Dex Bonus</label>
+                      <label class="control-label" ng-bind="character.combat.ac.dex"></label>
+                    </div>
+                    <div class="calculated-notice" ng-bind="getCalculatedNotice('dex_to_ac')"></div>
+                  </div>
+                  <div class="flex-col-6 row-space total-col">
+                    <div class="form-group">
+                      <label class="block-label">AC Total: <span ng-bind="getTotalAC(character.combat.ac)"></span></label>
+                    </div>
+                    <div class="calculated-notice" ng-bind="getCalculatedNotice('ac')"></div>
+                  </div>
+                </div>
+                <h3 class="h4">Speed</h3>
+                <p class="help-text" ng-show="character.prefs.help">Use the Armor Penalty field to subtract how much wearing your armor slows you down.</p>
+                <div class="flex-wrap-mobile-row gutters-5 stat-row stat-row-speed">
+                  <div class="flex-col-6 row-space base-col">
+                    <div class="form-group">
+                      <label class="block-label">Speed</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.speed.base">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space armor-col">
+                    <div class="form-group">
+                      <label class="block-label">Armor Penalty</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.speed.armor">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space fly-col">
+                    <div class="form-group">
+                      <label class="block-label">Fly Speed</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.speed.fly">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space swim-col">
+                    <div class="form-group">
+                      <label class="block-label">Swim Speed</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.speed.swim">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space climb-col">
+                    <div class="form-group">
+                      <label class="block-label">Climb Speed</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.speed.climb">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space burrow-col">
+                    <div class="form-group">
+                      <label class="block-label">Burrow Speed</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="character.combat.speed.burrow">
+                    </div>
+                  </div>
+                  <div class="flex-col-6 row-space current-col">
+                    <div class="form-group">
+                      <label class="block-label">Current Speed: <span ng-bind="getCurrentSpeed()"></span></label>
+                    </div>
+                    <div class="calculated-notice" ng-bind="getCalculatedNotice('speed')"></div>
+                  </div>
+                </div>
+                <div ng-show="character.weapons.length > 0">
+                  <h3 class="h4">Extra Attacks</h3>
+                  <p class="help-text" ng-show="character.prefs.help">Add extra attacks if you have special abilities, conditions or feats that allow you to take them. This section is especially helpful if you are Two-Weapon Fighting and need to add offhand attacks.</p>
+                </div>
+                <div class="group group-attack" ng-show="character.weapons.length > 0">
+                  <div class="flex-mobile-row gutters-5 row-space stat-row" ng-repeat="attack in character.getAttacks()">
+                    <div class="flex-col-4 form-group">
+                      <label class="block-label">Attack Bonus</label>
+                      <input type="number" class="form-control click-to-edit" placeholder="Attack Bonus" ng-model="attack.attack_bonus">
+                    </div>
+                    <div class="flex-col-4 form-group">
+                      <label class="block-label">Weapon</label>
+                      <div class="select-wrap">
+                        <i class="fa fa-sort"></i>
+                        <label ng-bind="getWeaponNameAtIndex(attack.weapon)"></label>
+                        <select class="form-control" ng-model="attack.weapon" ng-options="character.weapons.indexOf(weapon) as weapon.name for weapon in character.getWeapons()">
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex-col-4">
+                      <div class="bab-group form-group">
+                        <label class="block-label">BAB</label>
+                        <div class="select-wrap">
+                          <i class="fa fa-sort"></i>
+                          <label ng-bind="attack.bab"></label>
+                          <select class="form-control" ng-model="attack.bab" ng-options="bab for bab in getBABs()">
+                          </select>
+                        </div>
+                        <button type="button" class="remove-item" ng-click="remove(character.attacks, $index)"><i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="button-wrap">
+                    <button type="button" class="button-orange" ng-click="addAttack()"><i class="fa fa-plus"></i> Attack</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!--/group-->
+        </div><!--/tab-->
+        <div class="tab" ng-class="character.prefs.tab === 4 ? 'active' : ''" data-index="4">
+          <h2 class="group-header">Skills</h2>
+          <p class="help-text" ng-show="character.prefs.help">The checkboxes indicate if the skill is a class skill. When you change your class on the General tab, these checkboxes are automatically set. You can check or uncheck to add custom class skills, but when you change classes, it will reset to the class default. The class skill bonus of +3 is calculated automatically.</p>
+          <div class="calculated-wrap" ng-hide="getCalculatedCoreConditions('skill') === ''">
+            <div class="calculated-header">Conditions affecting skills:</div>
+            <div class="calculated-notice" ng-bind="getCalculatedCoreConditions('skill')"></div>
+          </div>
+
+          <div class="group group-skills">
+            <div class="flex-wrap-mobile-row gutters-5 row-space label-row">
+              <div class="flex-col name-col">
+                <div class="form-group">
+                  <label>Name</label>
+                </div>
+              </div>
+              <div class="flex-col ranks-col">
+                <div class="form-group">
+                  <label>Ranks</label>
+                </div>
+              </div>
+              <div class="flex-col misc-col">
+                <div class="form-group">
+                  <label>Misc</label>
+                </div>
+              </div>
+              <div class="flex-col ability-col">
+                <div class="form-group">
+                  <label>Ability</label>
+                </div>
+              </div>
+              <div class="flex-col mod-col">
+                <div class="form-group">
+                  <label>Mod</label>
+                </div>
+              </div>
+              <div class="flex-col total-col">
+                <div class="form-group">
+                  <label>Total</label>
+                </div>
+              </div>
+            </div><!--/label row-->
+            <div class="stat-row" ng-repeat="stat in character.getSkills()">
+              <div class="flex-wrap-mobile-row gutters-5">
+                <div class="flex-col row-space name-col">
+                  <div class="form-group">
+                    <input type="checkbox" ng-model="stat.class_skill">
+                    <label class="control-label" ng-bind="stat.name"></label>
+                  </div>
+                </div>
+                <div class="flex-col row-space ranks-col">
+                  <div class="form-group">
+                    <input type="number" class="form-control click-to-edit" ng-model="stat.ranks">
+                  </div>
+                </div>
+                <div class="flex-col row-space misc-col">
+                  <div class="form-group">
+                    <input type="number" class="form-control click-to-edit" ng-model="stat.misc">
+                  </div>
+                </div>
+                <div class="flex-col row-space ability-col">
+                  <div class="form-group">
+                    <div class="select-wrap">
+                      <i class="fa fa-sort"></i>
+                      <label ng-bind="stat.ability"></label>
+                      <select class="form-control" ng-model="stat.ability" ng-options="option for option in selection.abilities">
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-col row-space mod-col">
+                  <div class="form-group">
+                    <label class="control-label" ng-bind="getAbilityMod(stat.ability)"></label>
+                  </div>
+                </div>
+                <div class="flex-col row-space total-col">
+                  <div class="form-group">
+                    <label class="control-label" ng-bind="getSkillTotal(stat)"></label>
+                  </div>
+                </div>
+              </div>
+              <div class="calculated-notice" ng-show="stat.ability === 'STR' || stat.ability === 'DEX'" ng-bind="getCalculatedAlterations('skill')"></div>
+              <div class="calculated-notice" ng-bind="getCalculatedConditions(stat.name, 'skill')"></div>
+            </div>
+          </div><!--/group-->
+        </div><!--/tab-->
+        <div class="tab" ng-class="character.prefs.tab === 5 ? 'active' : ''" data-index="5">
+          <div class="flex-row gutters-10">
+            <div class="flex-col-6">
+              <h2 class="group-header">Weapons</h2>
+              <p class="help-text" ng-show="character.prefs.help">Add weapons here to show a list of attacks on the Overview tab. Combine weapon attack bonus, enchantment bonuses and any other bonuses to all attacks made with each weapon into the Attack Bonus field. Similarly, combine all damage bonuses into the Damage Bonus field.</p>
+              <div class="group group-weapons">
+                <div class="flex-wrap-mobile-row gutters-5 stat-row" ng-class="stat.type === 'Ranged' ? 'weapon-ranged' : 'weapon-melee'" ng-repeat="stat in character.getWeapons() track by $index">
+                  <div class="flex-col name-col">
+                    <div class="form-group">
+                      <label class="control-label">Name</label>
+                      <input type="text" class="form-control click-to-edit" ng-model="stat.name">
+                    </div>
+                  </div>
+                  <div class="flex-col type-col">
+                    <div class="form-group">
+                      <label class="control-label">Type</label>
+                      <div class="select-wrap">
+                        <i class="fa fa-sort"></i>
+                        <label ng-bind="stat.type"></label>
+                        <select class="form-control" ng-model="stat.type" ng-options="option for option in selection.weapon.type">
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col attack-bonus-col">
+                    <div class="form-group">
+                      <label class="control-label">Attack Bonus</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="stat.attack_bonus">
+                    </div>
+                  </div>
+                  <div class="flex-col damage-bonus-col">
+                    <div class="form-group">
+                      <label class="control-label">Damage Bonus</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="stat.damage_bonus">
+                    </div>
+                  </div>
+                  <div class="flex-col row-space damage-die-col">
+                    <div class="form-group">
+                      <label class="control-label">Damage Die</label>
+                      <input type="text" class="form-control click-to-edit" ng-model="stat.damage_die">
+                    </div>
+                  </div>
+                  <div class="flex-col row-space crit-range-col">
+                    <div class="form-group">
+                      <label class="control-label">Crit Range</label>
+                      <div class="select-wrap">
+                        <i class="fa fa-sort"></i>
+                        <label ng-bind="stat.crit_range"></label>
+                        <select class="form-control" ng-model="stat.crit_range" ng-options="option for option in selection.weapon.crit_range">
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col row-space crit-mult-col">
+                    <div class="form-group">
+                      <label class="control-label">Crit Mult</label>
+                      <div class="select-wrap">
+                        <i class="fa fa-sort"></i>
+                        <label ng-bind="stat.crit_mult"></label>
+                        <select class="form-control" ng-model="stat.crit_mult" ng-options="option for option in selection.weapon.crit_mult">
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col range-col" ng-show="stat.type === 'Ranged'">
+                    <div class="form-group">
+                      <input type="text" class="form-control click-to-edit" placeholder="Range" ng-model="stat.range">
+                    </div>
+                  </div>
+                  <div class="flex-col ammo-col" ng-show="stat.type === 'Ranged'">
+                    <div class="form-group">
+                      <input type="text" class="form-control click-to-edit" placeholder="Ammo" ng-model="stat.ammo">
+                    </div>
+                  </div>
+                  <div class="flex-col misfire-col" ng-show="stat.type === 'Ranged'">
+                    <div class="form-group">
+                      <input type="text" class="form-control click-to-edit" placeholder="Misfire" ng-model="stat.misfire">
+                    </div>
+                  </div>
+                  <button type="button" class="remove-item" ng-click="remove(character.weapons, $index)"><i class="fa fa-times"></i></button>
+                </div>
+                <button type="button" class="button-orange" ng-click="addWeapon()"><i class="fa fa-plus"></i> Weapon</button>
+              </div><!--/group-->
+            </div>
+            <div class="flex-col-6">
+              <h2 class="group-header">Armor</h2>
+              <p class="help-text" ng-show="character.prefs.help">You can add as many pieces of armor as you want, but only equipped armor items' properties are included in calculations throughout the sheet.</p>
+              <div class="group group-armor">
+                <div class="flex-wrap-mobile-row gutters-5 stat-row" ng-repeat="stat in character.getArmor()">
+                  <div class="flex-col name-col">
+                    <div class="form-group">
+                      <label class="control-label">Name</label>
+                      <input type="text" class="form-control click-to-edit" ng-model="stat.name">
+                    </div>
+                  </div>
+                  <div class="flex-col type-col">
+                    <div class="form-group">
+                      <label class="control-label">Type</label>
+                      <div class="select-wrap">
+                        <i class="fa fa-sort"></i>
+                        <label ng-bind="stat.type"></label>
+                        <select class="form-control" ng-model="stat.type" ng-options="option for option in selection.armor.type">
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col bonus-col">
+                    <div class="form-group">
+                      <label class="control-label">Bonus</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="stat.bonus">
+                    </div>
+                  </div>
+                  <div class="flex-col dex-col">
+                    <div class="form-group">
+                      <label class="control-label">Max Dex</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="stat.dex">
+                    </div>
+                  </div>
+                  <div class="flex-col penalty-col">
+                    <div class="form-group">
+                      <label class="control-label">Check Penalty</label>
+                      <input type="number" class="form-control click-to-edit" ng-model="stat.penalty">
+                    </div>
+                  </div>
+                  <div class="flex-col failure-col">
+                    <div class="form-group">
+                      <label class="control-label">Spell Failure</label>
+                      <input type="text" class="form-control click-to-edit" placeholder="Spell Failure" ng-model="stat.failure">
+                    </div>
+                  </div>
+                  <div class="flex-col weight-col">
+                    <div class="form-group">
+                      <label class="control-label">Weight</label>
+                      <input type="text" class="form-control click-to-edit" placeholder="Weight" ng-model="stat.weight">
+                    </div>
+                  </div>
+                  <div class="flex-col properties-col">
+                    <div class="form-group">
+                      <label class="control-label">Properties</label>
+                      <input type="text" class="form-control click-to-edit" placeholder="Properties" ng-model="stat.properties">
+                    </div>
+                  </div>
+                  <div class="flex-col wearing-col">
+                    <div class="form-group">
+                      <label class="control-label">Equipped</label>
+                      <input type="checkbox" ng-model="stat.active" class="match-text-field">
+                    </div>
+                  </div>
+                  <button type="button" class="remove-item" ng-click="remove(character.armor, $index)"><i class="fa fa-times"></i></button>
+                </div>
+                <button type="button" class="button-orange" ng-click="addArmor()"><i class="fa fa-plus"></i> Armor</button>
+              </div><!--/group-->
+            </div>
+          </div>
+        </div><!--/tab-->
+        <div class="tab" ng-class="character.prefs.tab === 6 ? 'active' : ''" data-index="6">
+          <div class="flex-row gutters-10">
+            <div class="flex-col-6">
+              <h2 class="group-header">Lists</h2>
+              <p class="help-text" ng-show="character.prefs.help">Each list contains any number of list items. Each list item has a name and a description. You can use lists for just about anything!</p>
+              <div class="group group-lists">
+                <div class="list-wrap" ng-repeat="list in character.getLists()">
+                  <div class="form-group list-title">
+                    <input type="text" class="form-control click-to-edit h5" placeholder="List Name" ng-model="list.name">
+                    <button type="button" class="remove-item" ng-click="remove(character.lists, $index)"><i class="fa fa-times"></i></button>
+                  </div>
+                  <div class="form-group show-on-overview">
+                    <span>Show on overview</span>
+                    <input type="checkbox" ng-model="list.overview">
+                  </div>
+                  <div class="flex-mobile-row gutters-5 row-space list-item-row" ng-repeat="item in character.getListItems($index)">
+                    <div class="flex-col-4 name-col">
+                      <div class="form-group">
+                        <input type="text" class="form-control click-to-edit" ng-model="item.name" placeholder="Item Name">
+                      </div>
+                    </div>
+                    <div class="flex-col-8 text-col">
+                      <div class="form-group">
+                        <textarea class="form-control click-to-edit" ng-model="item.text" placeholder="Item Description"></textarea>
+                        <button type="button" class="remove-item" ng-click="remove(list.content, $index)"><i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="button" class="add-item" ng-click="addListItem(list.content)"><i class="fa fa-plus"></i></button>
+                </div>
+                <div class="button-wrap">
+                  <button type="button" class="button-orange" ng-click="addList()"><i class="fa fa-plus"></i> List</button>
+                </div>
+              </div><!--/group-->
+            </div>
+            <div class="flex-col-6">
+              <h2 class="group-header">Consumables</h2>
+              <p class="help-text" ng-show="character.prefs.help">Consumables is like a list, but you can also increment how many of each item you have. You can use this to keep track of potions, mundane items or even loot.</p>
+              <div class="group group-consumables">
+                <div class="list-wrap" ng-repeat="list in character.getConsumables() track by $index">
+                  <div class="form-group list-title">
+                    <div class="flex-row gutters-5">
+                      <div class="flex-col-6">
+                        <input type="text" class="form-control click-to-edit" ng-model="list.name" placeholder="Name">
+                      </div>
+                      <div class="flex-col-6">
+                        <input type="number" class="form-control click-to-edit" ng-model="list.amount">
+                      </div>
+                    </div>
+                    <button type="button" class="remove-item" ng-click="remove(character.consumables, $index)"><i class="fa fa-times"></i></button>
+                  </div>
+                  <div class="form-group">
+                    <textarea class="form-control click-to-edit" ng-model="list.text" placeholder="Description"></textarea>
+                  </div>
+                </div>
+                <div class="button-wrap">
+                  <button type="button" class="button-orange" ng-click="addConsumable()"><i class="fa fa-plus"></i> Consumable</button>
+                </div>
+              </div><!--/group-->
+            </div>
+          </div>
+          <h2 class="group-header">Custom Stats</h2>
+          <p class="help-text" ng-show="character.prefs.help">Custom stats can be used to keep track of non-calculated bonuses or miscellaneous stats.</p>
+          <div class="group group-custom">
+            <div class="flex-mobile-row gutters-5 row-space custom-stat-wrap" ng-repeat="stat in character.getCustomStats()">
+              <div class="flex-col-6 form-group stat-title">
+                <input type="text" placeholder="Name" class="form-control click-to-edit" ng-model="stat.name">
+              </div>
+              <div class="flex-col-6 form-group stat-value">
+                <input type="number" placeholder="Value" class="form-control click-to-edit" ng-model="stat.value">
+              </div>
+              <button type="button" class="remove-item" ng-click="remove(character.custom_stats, $index)"><i class="fa fa-times"></i></button>
+            </div>
+            <button type="button" class="button-orange" ng-click="addCustomStat()"><i class="fa fa-plus"></i> Custom Stat</button>
+          </div><!--/group-->
+        </div><!--/tab-->
+        <div class="tab" ng-class="character.prefs.tab === 7 ? 'active' : ''" data-index="7">
+          <div class="flex-row gutters-10 sources">
+            <div class="flex-col-6 source source-player">
+              <h2 class="group-header">Feats</h2>
+              <p class="help-text" ng-show="character.prefs.help">This is a list of your feats. Keep in mind that feats ARE NOT calculated nor do they influence any other part of the sheet. If the feat allows your to make changes to your stats, you must make them yourself. You can add a new feat yourself and fill out all the fields, or you can find feats from the database on the right.</p>
+              <div class="group group-feats">
+                <div class="feat-row" ng-repeat="feat in character.getFeats() track by $index">
+                  <div class="flex-mobile-row gutters-5">
+                    <div class="flex-col-6 form-group name-col">
+                      <label class="block-label">Name</label>
+                      <input type="text" placeholder="Name" class="form-control click-to-edit" ng-model="feat.name">
+                      <button type="button" class="remove-item" ng-click="remove(character.feats, $index)"><i class="fa fa-times"></i></button>
+                    </div>
+                    <div class="flex-col-6 form-group">
+                      <div class="prereq-col">
+                        <label class="block-label">Prerequisites</label>
+                        <input type="text" placeholder="Prerequisites" class="form-control click-to-edit" ng-model="feat.prereq">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col-12 form-group">
+                    <label class="block-label">Summary</label>
+                    <input type="text" placeholder="Summary" class="form-control click-to-edit" ng-model="feat.summary">
+                  </div>
+                  <div class="flex-wrap-mobile-row gutters-5">
+                    <div class="flex-col-6 form-group" ng-repeat="info in character.getFeatTexts($index)">
+                      <label class="block-label" ng-bind="info.name"></label>
+                      <textarea ng-placeholder="info.name" class="form-control click-to-edit" ng-model="info.text"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="button-orange" ng-click="addFeat()"><i class="fa fa-plus"></i> Feat</button>
+              </div><!--/group-->
+            </div><!--/source-->
+            <div class="flex-col-6 source source-srd">
+              <h2 class="group-header">Find Feats</h2>
+              <p class="help-text" ng-show="character.prefs.help">This is a list of feats from the D20PFSRD. Click the plus button to add it to your feats list on the left. You can also enter text in the field below to filter the results and find feats faster.</p>
+              <p class="help-text" ng-show="character.prefs.help"><strong>BETA USERS</strong>: This database of feats is incomplete and occasionally wrong! Let us know if you find something incorrect, or if there's a feat you'd like us to add.</p>
+              <input type="text" class="form-control filter-field" ng-model="data.search.feats" placeholder="Filter Feats">
+              <div class="group-feats">
+                <div class="feat-row" ng-repeat="feat in data.feats | filter:data.search.feats">
+                  <button class="add-item add-and-disable" bt-disable-on-click type="button" ng-click="addFeat(feat)">
+                    <i class="fa fa-plus"></i>
+                    <i class="fa fa-check"></i>
+                  </button>
+                  <h3 class="data-header">[[feat.name]]</h3>
+                  <p><strong>Summary:</strong> <span>[[feat.summary]]</span></p>
+                  <p><strong>Prerequisites:</strong> <span>[[feat.prereq]]</span></p>
+                  <p ng-repeat="info in feat.text" ng-hide="info.text === ''"><strong>[[info.name]]</strong>: <span>[[info.text]]</span></p>
+                </div>
+              </div>
+            </div>
+          </div><!--/sources-->
+        </div><!--/tab-->
+        <div class="tab" ng-class="character.prefs.tab === 8 ? 'active' : ''" data-index="8">
+          <div class="flex-row gutters-10 sources">
+            <div class="flex-col-6 source source-player">
+              <div class="group group-spellbook">
+                <h2 class="group-header">Spellbook</h2>
+                <p class="help-text" ng-show="character.prefs.help">This is a list of your spells. Spells are ordered by spell level, and each level can be collapsed to keep the layout clean. You can click the green arrow to see more details about a spell, or the gray pencil button to edit its fields.</p>
+                <p class="help-text" ng-show="character.prefs.help">Keep in mind that spells ARE NOT calculated nor do they influence any other part of the sheet. If the spell allows your to make changes to your stats, you must make them yourself. You can add a new spell yourself and fill out all the fields, or you can find spells from the database on the right.</p>
+                <div class="spell-level-row spells-showing" ng-repeat="level in character.getSpellLevels()">
+                  <h3 class="data-category" ng-hide="level.length === 0">
+                    <span class="spell-level-toggle" bt-toggle-spell-level>
+                      <i class="fa fa-caret-right show-spell-level"></i>
+                      <i class="fa fa-caret-down hide-spell-level"></i>
+                    </span>
+                    Level <span ng-bind="$index"></span> Spells
+                  </h3>
+                  <div class="spells">
+                    <div class="spell-row" ng-repeat="spell in character.getSpells($index)">
+                      <div class="inner">
+                        <button type="button" class="action remove-item" ng-click="remove(character.spells.spellbook.get($parent.$index), $index)"><i class="fa fa-times"></i></button>
+                        <button type="button" class="action gray-button edit-item" bt-edit-spell>
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="action green-button toggle-active" bt-show-details>
+                          <i class="fa fa-caret-down expand-spell"></i><i class="fa fa-caret-up contract-spell"></i>
+                        </button>
+                        <h3 class="spell-name"><span>[[spell.name]]</span></h3>
+                        <p class="short hide-on-active hide-on-editing">[[spell.short_description]]</p>
+                        <div class="spell-fields">
+                          <div class="form-group">
+                            <input type="text" class="form-control click-to-edit" placeholder="Name" ng-model="spell.name">
+                          </div>
+                          <div class="form-group">
+                            <input type="text" class="form-control click-to-edit" placeholder="Short Description" ng-model="spell.short_description">
+                          </div>
+                          <div class="form-group">
+                            <textarea class="form-control click-to-edit" placeholder="Description" ng-model="spell.description"></textarea>
+                          </div>
+                          <div class="form-group">
+                            <input type="text" class="form-control click-to-edit" placeholder="Effect" ng-model="spell.casting.effect">
+                          </div>
+                          <div class="flex-wrap-mobile-row gutters-5">
+                            <div class="flex-col-6 form-group">
+                              <input type="text" class="form-control click-to-edit" placeholder="School" ng-model="spell.restrictions.school">
+                            </div>
+                            <div class="flex-col-6 form-group">
+                              <input type="text" class="form-control click-to-edit" placeholder="Casting Time" ng-model="spell.castin.casting_time">
+                            </div>
+                            <div class="flex-col-6 form-group">
+                              <input type="text" class="form-control click-to-edit" placeholder="Components" ng-model="spell.casting.components">
+                            </div>
+                            <div class="flex-col-6 form-group">
+                              <input type="text" class="form-control click-to-edit" placeholder="Duration" ng-model="spell.casting.duration">
+                            </div>
+                            <div class="flex-col-6 form-group">
+                              <input type="text" class="form-control click-to-edit" placeholder="Range" ng-model="spell.casting.range">
+                            </div>
+                            <div class="flex-col-6 form-group">
+                              <input type="text" class="form-control click-to-edit" placeholder="Saving Throw" ng-model="spell.casting.saving_throw">
+                            </div>
+                            <div class="flex-col-6 form-group">
+                              <input type="text" class="form-control click-to-edit" placeholder="Spell Resistance" ng-model="spell.casting.spell_resistance">
+                            </div>
+                            <div class="flex-col-6 form-group">
+                              <input type="text" class="form-control click-to-edit" placeholder="Targets" ng-model="spell.casting.targets">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="casting hide-on-active">
+                          <div class="form-group">
+                            <label class="control-label">Remaining</label>
+                            <input type="number" class="form-control click-to-edit" placeholder="Remaining" ng-model="spell.remaining">
+                          </div>
+                          <div class="form-group">
+                            <label class="control-label">Prepared</label>
+                            <input type="number" class="form-control click-to-edit" placeholder="Prepared" ng-model="spell.prepared">
+                          </div>
+                        </div>
+                        <div class="details">
+                          <p><strong>Level: </strong><span ng-bind="spell.level"></span></p>
+                          <p><strong>Description: </strong><span ng-bind="spell.description"></span></p>
+                          <p><strong>School: </strong><span ng-bind="spell.restrictions.school"></span></p>
+                          <p ng-hide="spell.restrictions.subschool === ''"><strong>School: </strong><span ng-bind="spell.restrictions.subschool"></span></p>
+                          <p><strong>Casting Time: </strong><span ng-bind="spell.casting.casting_time"></span></p>
+                          <p><strong>Components: </strong><span ng-bind="spell.casting.components"></span></p>
+                          <p><strong>Duration: </strong><span ng-bind="spell.casting.duration"></span></p>
+                          <p ng-hide="spell.casting.effect === ''"><strong>Effect: </strong><span ng-bind="spell.casting.effect"></span></p>
+                          <p><strong>Range: </strong><span ng-bind="spell.casting.range"></span></p>
+                          <p><strong>Saving Throw: </strong><span ng-bind="spell.casting.saving_throw"></span></p>
+                          <p><strong>Spell Resistance: </strong><span ng-bind="spell.casting.spell_resistance"></span></p>
+                          <p ng-hide="spell.casting.targets === ''"><strong>Targets: </strong><span ng-bind="spell.casting.targets"></span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="select-wrap new-spell-level">
+                  <i class="fa fa-sort"></i>
+                  <label ng-bind="data.new_spell_level"></label>
+                  <select class="form-control" ng-model="data.new_spell_level" ng-options="option for option in selection.spell_levels">
+                  </select>
+                </div>
+                <button type="button" class="button-orange" ng-click="addSpell()"><i class="fa fa-plus"></i> Spell</button>
+              </div><!--/group-->
+              <div class="group group-spells" ng-show="character.spells.per_day.length > 0 || character.spells.known.length > 0">
+                <h2 class="group-header">Spell Info</h2>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Level</th>
+                      <th ng-repeat="info in character.spells.per_day track by $index" ng-hide="info === 'x' && $index > 0"><span ng-bind="$index"></span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-show="character.spells.per_day.length > 0">
+                      <th>Spells Per Day</th>
+                      <td ng-repeat="info in updateTotalSpellsPerDay() track by $index" ng-hide="info === 'x' && $index > 0" ng-bind="info"></td>
+                    </tr>
+                    <tr ng-show="character.spells.known.length > 0">
+                      <th>Spells Known</th>
+                      <td ng-repeat="info in character.spells.known track by $index" ng-bind="info"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div><!--/group-->
+            </div><!--/source-->
+            <div class="flex-col-6 source source-srd">
+              <h2 class="group-header">Find Spells</h2>
+              <p class="help-text" ng-show="character.prefs.help">This is a list of spells from the D20PFSRD. You can change which spellcaster's spells are displayed by clicking on the dropdown menu below. Once the spells appear you can click the plus button to add it to your spellbook on the left. You can also enter text in the field below to filter the results and find spells faster.</p>
+              <p class="help-text" ng-show="character.prefs.help"><strong>BETA USERS</strong>: This database of spells is incomplete and occasionally wrong! Let us know if you find something incorrect, or if there's a spell you'd like us to add.</p>
+              <div class="group-spells">
+                <div class="select-wrap select-spellcaster">
+                  <i class="fa fa-sort"></i>
+                  <label ng-bind="getClassFromSpellcaster(data.current_spellcaster)"></label>
+                  <select class="form-control" ng-model="data.current_spellcaster" ng-options="caster.id as caster.name for caster in selection.spellClasses" ng-change="loadClassSpells(data.current_spellcaster)">
+                  </select>
+                </div>
+                <input type="text" class="form-control filter-field" ng-model="data.search.spells" placeholder="Filter Spells">
+                <h2><span ng-bind="getClassFromSpellcaster(data.current_spellcaster)"></span> Spells</h2>
+                <div class="klass spells-showing" ng-repeat="level in data.spells">
+                  <h3 ng-hide="level.length === 0">
+                    <span class="spell-level-toggle" bt-toggle-spell-level>
+                      <i class="fa fa-caret-right show-spell-level"></i>
+                      <i class="fa fa-caret-down hide-spell-level"></i>
+                    </span>
+                    Level <span ng-bind="$index"></span> Spells
+                  </h3>
+                  <div class="spells">
+                    <div class="spell-row" ng-repeat="spell in level | filter:data.search.spells" bt-toggle-active>
+                      <div class="inner">
+                        <button type="button" class="action add-item add-and-disable" bt-disable-on-click ng-click="addSpell(spell); $event.stopPropagation();">
+                          <i class="fa fa-plus"></i>
+                          <i class="fa fa-check"></i>
+                        </button>
+                        <button type="button" class="action green-button toggle-active" bt-show-details>
+                          <i class="fa fa-caret-down expand-spell"></i><i class="fa fa-caret-up contract-spell"></i>
+                        </button>
+                        <h3 class="spell-name"><span ng-bind="spell.name"></span></h3>
+                        <p class="short" ng-bind="spell.short_description"></p>
+                        <div class="details">
+                          <p><strong>Level: </strong><span ng-bind="spell.level"></span></p>
+                          <p><strong>Description: </strong><span ng-bind="spell.description"></span></p>
+                          <p><strong>School: </strong><span ng-bind="spell.restrictions.school"></span></p>
+                          <p ng-hide="spell.restrictions.subschool === ''"><strong>School: </strong><span ng-bind="spell.restrictions.subschool"></span></p>
+                          <p><strong>Casting Time: </strong><span ng-bind="spell.casting.casting_time"></span></p>
+                          <p><strong>Components: </strong><span ng-bind="spell.casting.components"></span></p>
+                          <p><strong>Duration: </strong><span ng-bind="spell.casting.duration"></span></p>
+                          <p ng-hide="spell.casting.effect === ''"><strong>Effect: </strong><span ng-bind="spell.casting.effect"></span></p>
+                          <p><strong>Range: </strong><span ng-bind="spell.casting.range"></span></p>
+                          <p><strong>Saving Throw: </strong><span ng-bind="spell.casting.saving_throw"></span></p>
+                          <p><strong>Spell Resistance: </strong><span ng-bind="spell.casting.spell_resistance"></span></p>
+                          <p ng-hide="spell.casting.targets === ''"><strong>Targets: </strong><span ng-bind="spell.casting.targets"></span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!--/sources-->
+        </div><!--/tab-->
+        <div class="tab" ng-class="character.prefs.tab === 9 ? 'active' : ''" data-index="9">
+          <div class="flex-row gutters-10">
+            <div class="flex-col-6">
+              <h2 class="group-header">Core Conditions</h2>
+              <p class="help-text" ng-show="character.prefs.help">These are conditions that affect your character from the Core Rule Book. Click on them to enable and view the description.</p>
+              <div class="group group-conditions-toggle">
+                <div class="condition-row" ng-repeat="condition in data.conditions">
+                  <div class="form-group">
+                    <label class="block-label">
+                      <input type="checkbox" ng-model="character.core_conditions[condition.name]">
+                      <span class="cap-conditions" ng-bind="condition.name"></span>
+                    </label>
+                  </div>
+                  <div ng-bind-html="condition.text" ng-show="character.core_conditions[condition.name]"></div>
+                </div>
+              </div>
+            </div>
+            <div class="flex-col-6">
+              <h2 class="group-header">Custom Conditions</h2>
+              <p class="help-text" ng-show="character.prefs.help">You can also add custom conditions that affect almost any stat in the character sheet. To create a custom effect, add a new custom condition, give it a name and add an effect with the green plus button. You can then select which stat to affect on the left and what formula to use on the right. Formulas can include <code>+</code> or <code>-</code> and use <code>n</code> in place of the stat being affected.</p>
+              <p class="help-text" ng-show="character.prefs.help">For example, if you wanted to create a condition that increased your STR by 2, you would select STR on the left side and enter <code>n + 2</code> in the formula field on the right.</p>
+              <p class="help-text" ng-show="character.prefs.help">When you are finished editing your custom condition, you can click the checkbox to enable the effects. If the formula field turns red, it means you have an error in your formula and you need to edit it before you can try to enable the condition again.</p>
+              <h3 class="h4" ng-hide="character.conditions.length === 0">Toggle Conditions</h2>
+              <div class="group group-conditions-toggle">
+                <div class="condition-row" ng-repeat="condition in character.getConditions()">
+                  <div class="form-group">
+                    <label class="block-label">
+                      <input type="checkbox" ng-change="toggleCondition(condition)" ng-disabled="!isConditionValid(condition)" ng-model="condition.active">
+                      <span ng-bind="condition.name"></span>
+                    </label>
+                  </div>
+                  <p ng-bind="condition.description" ng-show="condition.active"></p>
+                </div>
+              </div>
+              <h3 class="h4" ng-hide="character.conditions.length === 0">Edit Conditions</h2>
+              <div class="group group-conditions-edit">
+                <div class="condition-row" ng-repeat="condition in character.getConditions()" ng-class="condition.active ? 'condition-disabled' : ''" ng-show="condition.source === 'user'">
+                  <div class="flex-mobile-row gutters-5">
+                    <div class="flex-col-6">
+                      <div class="name-col">
+                        <input type="text" class="form-control click-to-edit" placeholder="Name" ng-disabled="condition.active" ng-model="condition.name">
+                      </div>
+                    </div>
+                    <div class="flex-col-6">
+                      <div class="description-col">
+                        <input type="text" class="form-control click-to-edit" placeholder="Description" ng-disabled="condition.active" ng-model="condition.description">
+                        <button type="button" ng-hide="condition.active" class="remove-item" ng-click="remove(character.conditions, $index)"><i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="effect-col">
+                    <div class="flex-mobile-row gutters-5">
+                      <div class="flex-col-6">
+                        <label class="block-label">Effect Stat</label>
+                      </div>
+                      <div class="flex-col-6">
+                        <label class="block-label">Effect Formula</label>
+                      </div>
+                    </div>
+                    <div class="effect" ng-repeat="effect in character.getConditionEffects($index) track by $index">
+                      <div class="flex-mobile-row gutters-5">
+                        <div class="flex-col-6">
+                          <div class="form-group" ng-class="effect.valid ? 'valid-field' : 'invalid-field'">
+                            <div class="select-wrap" bt-select-wrap="[[effect.stat]]" ng-disabled="condition.active">
+                              <i class="fa fa-sort"></i>
+                              <label></label>
+                              <select class="form-control" ng-model="effect.stat" ng-disabled="condition.active" ng-options="stat.path as stat.name for stat in selection.conditionStats"></select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="flex-col-6">
+                          <div class="form-group formula-field" ng-class="effect.valid ? 'valid-field' : 'invalid-field'">
+                            <input type="text" class="form-control click-to-edit" ng-change="validateAndReturnFormula(effect)" ng-disabled="condition.active" ng-model="effect.formula">
+                            <button type="button"  ng-hide="condition.active" class="remove-item" ng-click="remove(character.conditions.get($parent.$index).effect, $index)"><i class="fa fa-times"></i></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="action-col">
+                    <button type="button" ng-hide="condition.active" class="add-item" ng-click="addEffect(condition.effect)"><i class="fa fa-plus"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="add-condition">
+                <button type="button" class="button-orange" ng-click="addCondition()"><i class="fa fa-plus"></i> Condition</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!--/tabs-wrapper-->
+      <footer>
+        <div class="help-link-wrapper">
+          <a href="/help" class="help-link" target="_blank">Questions? Something break? Get help</a>
+        </div>
+      </footer>
+    </div><!--/content-->
+  </div>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-38757918-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>

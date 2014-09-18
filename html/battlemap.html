@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <link href="/css/all.css" media="all" rel="stylesheet" type="text/css">
+  <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+  <title>RPG Battle Map | Beyond Tabletop</title>
+  <meta property="og:title" content="RPG Battle Map | Beyond Tabletop">
+  <meta name="description" property="og:description" content="Beyond Tabletop maps are easy to use, packed with features, and fun to customize. Create a map for your players using tokens, shapes, and background images, then just share it through Drive. All players can access it simultaneously, move and customize their character token, and track the party’s initiative order, health and conditions.">
+  <meta property="og:image" content="http://www.beyondtabletop.com/ico/favicon-310.png">
+  <meta property="og:site_name" content="Beyond Tabletop">
+
+  <link rel="shortcut icon" href="/ico/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/ico/favicon-57.png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="/ico/favicon-114.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="/ico/favicon-72.png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="/ico/favicon-144.png" />
+  <link rel="apple-touch-icon" sizes="60x60" href="/ico/favicon-60.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/ico/favicon-120.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="/ico/favicon-76.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/ico/favicon-152.png" />
+  <link rel="icon" type="image/png" href="/ico/favicon-196.png" sizes="196x196" />
+  <link rel="icon" type="image/png" href="/ico/favicon-96.png" sizes="96x96" />
+  <link rel="icon" type="image/png" href="/ico/favicon-32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/ico/favicon-16.png" sizes="16x16" />
+  <link rel="icon" type="image/png" href="/ico/favicon-128.png" sizes="128x128" />
+  <meta name="application-name" content="Beyond Tabletop"/>
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="/ico/favicon-144.png" />
+  <meta name="msapplication-square70x70logo" content="/ico/favicon-70.png" />
+  <meta name="msapplication-square150x150logo" content="/ico/favicon-150.png" />
+  <meta name="msapplication-wide310x150logo" content="/ico/favicon-310x150.png" />
+  <meta name="msapplication-square310x310logo" content="/ico/favicon-310.png" />
+
+  <meta name="apple-mobile-web-app-title" content="BTT">
+
+  <!-- iOS 6 & 7 iPad (retina, portrait) -->
+  <link href="/ico/apple-startup-1536x2008.png"
+    media="(device-width: 768px) and (device-height: 1024px)
+       and (orientation: portrait)
+       and (-webkit-device-pixel-ratio: 2)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 & 7 iPad (retina, landscape) -->
+  <link href="/ico/apple-startup-1496x2048.png"
+    media="(device-width: 768px) and (device-height: 1024px)
+       and (orientation: landscape)
+       and (-webkit-device-pixel-ratio: 2)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 iPad (portrait) -->
+  <link href="/ico/apple-startup-768x1004.png"
+    media="(device-width: 768px) and (device-height: 1024px)
+       and (orientation: portrait)
+       and (-webkit-device-pixel-ratio: 1)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 iPad (landscape) -->
+  <link href="/ico/apple-startup-748x1024.png"
+    media="(device-width: 768px) and (device-height: 1024px)
+       and (orientation: landscape)
+       and (-webkit-device-pixel-ratio: 1)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 & 7 iPhone 5 -->
+  <link href="/ico/apple-startup-640x1096.png"
+    media="(device-width: 320px) and (device-height: 568px)
+       and (-webkit-device-pixel-ratio: 2)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 & 7 iPhone (retina) -->
+  <link href="/ico/apple-startup-640x920.png"
+    media="(device-width: 320px) and (device-height: 480px)
+       and (-webkit-device-pixel-ratio: 2)"
+    rel="apple-touch-startup-image">
+
+  <!-- iOS 6 iPhone -->
+  <link href="/ico/apple-startup-320x460.png"
+    media="(device-width: 320px) and (device-height: 480px)
+       and (-webkit-device-pixel-ratio: 1)"
+    rel="apple-touch-startup-image">
+  
+  <script src="/js/lib.js"></script>
+  <script src="/js/all.js"></script>
+</head>
+<body id="app" class="battlemap-page" ng-controller="battleMapController">
+  <div id="container">
+    <div id="content">
+      <div class="forbidden-screen" ng-show="$root.forbidden">
+        <div class="inner">
+          <h2>Oops, it looks like you don't have access to this map.</h2> 
+          <a href="/dashboard" class="button-orange button-large"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+      </div>
+      <div class="error-screen" ng-show="$root.error">
+        <div class="inner">
+          <h2>There's been an error, <br>please refresh.</h2> 
+          <a href="javascript:window.location.href=window.location.href" class="button-orange button-large"><i class="fa fa-refresh fa-spin"></i> Refresh</a>
+        </div>
+      </div>
+      <div class="loading" ng-hide="ready || $root.forbidden">
+        <div class="inner">
+          <h2>Loading map, <br>please wait...</h2> 
+          <div><i class="fa fa-spinner fa-spin"></i></div>
+        </div>
+      </div>
+      <div id="viewport">
+        <div id="map" bt-map ng-style="{width: battlemap.details.size.width, height: battlemap.details.size.height, left: locals.current_position.left, top: locals.current_position.top, backgroundImage: getMapBackground()}">
+          <div id="token-drag-distance"></div>
+          <div id="shapes">
+            <div class="shape" bt-map-shape="shape" ng-hide="shape.fog && !locals.map_owner" ng-class="getShapeClasses(shape)" ng-click="selectItem(shape)" ng-repeat="shape in battlemap.getShapes() track by $index" ng-style="{top: shape.position.top, left: shape.position.left, width: shape.size.width, height: shape.size.height}">
+              <div class="image" ng-style="{backgroundColor: shape.color, backgroundImage: 'url(' + shape.image + ')'}"></div>
+            </div>
+          </div>
+          <div id="tokens">
+            <div class="token" bt-map-token="token" ng-hide="token.fog && !locals.map_owner" ng-class="getTokenClasses(token)" ng-click="selectItem(token)" ng-repeat="token in battlemap.getTokens() track by $index" ng-style="{top: token.position.top, left: token.position.left}">
+              <div class="icon" ng-style="{backgroundColor: token.color, backgroundImage: 'url(' + token.image + ')'}">
+                <div class="icon-label" ng-bind="getLabelInitial(token.label)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="map-nav" ng-class="nav_status">
+        <div class="logo-wrap">
+          <div class="logo"></div>
+        </div>
+        <h2>Battlemap Name</h2>
+        <button type="button" class="clear toggle-button" ng-click="toggleNavStatus()"><i class="fa fa-caret-right"></i><i class="fa fa-caret-left"></i></button>
+        <div id="toolbar">
+          <div class="primary-actions">
+            <button type="button" ng-click="addToken()" title="New Token"><i class="fa fa-plus-circle"></i></button>
+            <button type="button" ng-click="addShape()" title="New Shape"><i class="fa fa-plus-square"></i></button>
+            <button type="button" ng-click="goToCenter()" title="Go To Center"><i class="fa fa-crosshairs"></i></button>
+            <button type="button" ng-show="locals.map_owner" ng-click="editMapDetails()" title="Edit Map Details" class="hide-on-collapsed" ng-class="locals.show_details ? 'active' : ''"><i class="fa fa-gear"></i></button>
+          </div>
+          <div class="map-details" ng-class="locals.show_details ? 'visible' : 'hidden'">
+            <p>Swap the background image of the map. To line up custom images with the map's grid, the image should be 80x80 and contain four 40x40 squares.</p>
+            <div class="map-background-preview" ng-style="{backgroundImage: getMapBackground()}"></div>
+            <input type="text" class="form-control" placeholder="Image URL" ng-model="battlemap.details.image">
+          </div>
+          <!-- <div class="row no-gutters">
+            <div class="col-xs-6">
+              <button type="button" ng-click="zoomOut()"><i class="fa fa-minus"></i> Zoom Out</button>
+            </div>
+            <div class="col-xs-6">
+              <button type="button" ng-click="zoomIn()"><i class="fa fa-plus"></i> Zoom In</button>
+            </div>
+          </div> -->
+          <div class="details" ng-hide="toolbar.activeItem === null">
+            <div class="hide-on-collapsed">
+              <div class="form-group">
+                <input type="text" class="form-control big-one" placeholder="Label" ng-model="toolbar.activeItem.label">
+              </div>
+              <div ng-show="ifActiveItemIsShape()" class="form-group checkbox-group">
+                <label>Round</label>
+                <input type="checkbox" ng-model="toolbar.activeItem.round">
+              </div>
+              <div ng-show="ifActiveItemIsShape()" class="form-group checkbox-group">
+                <label>Pinned</label>
+                <input type="checkbox" ng-model="toolbar.activeItem.pinned">
+              </div>
+              <div ng-show="ifActiveItemIsShape() || toolbar.activeItem.image === ''" class="form-group checkbox-group">
+                <label>Tile BG?</label>
+                <input type="checkbox" ng-model="toolbar.activeItem.tiled">
+              </div>
+              <div ng-show="locals.map_owner" class="form-group checkbox-group">
+                <label>Hide for Players</label>
+                <input type="checkbox" ng-model="toolbar.activeItem.fog">
+              </div>
+              <div class="form-group" ng-show="ifActiveItemIsToken()">
+                <div class="select-wrap">
+                  <i class="fa fa-sort"></i>
+                  <label ng-bind="toolbar.activeItem.size.name"></label>
+                  <select class="form-control" ng-model="toolbar.activeItem.size.name" ng-selected="option.value === toolbar.activeItem.size.name" ng-options="option.value as option.name for option in selection.sizes">
+                    </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Image URL" ng-model="toolbar.activeItem.image">
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Color" ng-model="toolbar.activeItem.color">
+              </div>
+              <div class="form-group" ng-show="ifActiveItemIsToken()">
+                <input type="text" class="form-control" placeholder="Damage" ng-model="toolbar.activeItem.damage">
+              </div>
+              <div class="form-group" ng-show="ifActiveItemIsToken()">
+                <input type="text" class="form-control" placeholder="Status" ng-model="toolbar.activeItem.status">
+              </div>
+            </div>
+            <div class="uncollapsed-row">
+              <div class="uncollapsed-col">
+                <button type="button" class="delete-active-item" ng-click="deleteItem(toolbar.activeItem)" title="Delete selected"><i class="fa fa-times"></i> <span class="hide-on-collapsed">Delete</span></button>
+              </div>
+              <div class="uncollapsed-col">
+                <button type="button" class="copy-active-item" ng-click="copyItem(toolbar.activeItem)" title="Delete selected"><i class="fa fa-files-o"></i> <span class="hide-on-collapsed">Copy</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="battle-board">
+          <h3><span class="hide-on-collapsed">Round</span> <span ng-bind="battlemap.details.round"></span></h3>
+          <div id="combat-order" ng-model="tokenLayer">
+            <div class="combatant" ng-hide="token.fog && !locals.map_owner" ng-class="token.active ? 'active' : ''" ng-click="selectItem(token)" data-index="[[$index]]" ng-repeat="token in battlemap.getTokens() | orderBy : 'init' : true track by $index">
+              <h5 ng-bind="getLabelInitial(token.label)" class="hide-on-visible"></h5>
+              <div class="hide-on-collapsed">
+                <h4 ng-bind="token.label"></h4>
+                <input type="number" class="form-control init" placeholder="Initiative" ng-model="token.init" bt-blur-change>
+              </div>
+            </div>
+          </div>
+          <div class="turn-actions form-group" ng-show="battlemap.tokens.length > 1 && locals.map_owner">
+            <div class="action-row">
+              <div class="action-col">
+                <button type="button" class="gray" ng-click="advanceTurn(-1)"><i class="fa fa-backward"></i> <span class="hide-on-collapsed">Prev</span></button>
+              </div>
+              <div class="action-col">
+                <button type="button" class="gray" ng-click="advanceTurn(1)"><span class="hide-on-collapsed">Next</span> <i class="fa fa-forward"></i></button>
+              </div>
+            </div>
+          </div>
+          <!-- next turn, previous turn, reset turn, round counter, status field, damage field-->
+        </div>
+        <div id="collaborators">
+          <div class="collaborator" ng-repeat="user in getCollaborators()">
+            <div class="user-image">
+              <img ng-src="[[user.photoUrl]]" alt="[[user.displayName]]">
+            </div>
+            <h4 ng-bind="user.displayName" ng-style="{ color: user.color }"></h4>
+          </div>
+        </div>
+        <div class="button-wrap hide-on-collapsed">
+          <button class="share-button" onclick="s.showSettingsDialog()">Share</button>
+        </div>
+        <div class="help-link-wrapper hide-on-collapsed">
+          <a href="/help" class="help-link" target="_blank">Questions? Something break? Get help</a>
+        </div>
+      </div>
+    </div><!--/content-->
+  </div>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-38757918-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  <script type="text/javascript">
+    var BTT_CURRENT_GOOGLE_EMAIL = "{{ user_email }}";
+    share_init = function() {
+      s = new gapi.drive.share.ShareClient('787699769557');
+      var window_pathname = window.location.pathname;
+      s.setItemIds([window_pathname.substr(window_pathname.lastIndexOf('/') + 1)]);
+    };
+    window.onload = function() {
+      gapi.load('drive-share', share_init);
+    };
+  </script>
+</body>
+</html>
